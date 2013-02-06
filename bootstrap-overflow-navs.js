@@ -32,7 +32,7 @@
 			parent = options.parent,
 			offset = options.offset;
 		
-		// Variable used to override widow size check
+		// Variable used to override window size check
 		var override_width = false;
 		if(options.override_width) {
 			override_width = true;
