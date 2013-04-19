@@ -1,5 +1,5 @@
 /* ===================================================
- * bootstrap-overflow-navs.js v0.1
+ * bootstrap-overflow-navs.js v0.2
  * ===================================================
  * Copyright 2012 Michael Langford
  *
@@ -19,65 +19,67 @@
 !function ($) {
 
 	"use strict"; // jshint ;_;
-	
+
 	/**
 	 * options:
-	 *		more - translate of more text
+	 *		more - translated "more" text
 	 *		parent - parent/container div to calculate width from
 	 *		offset - any div inside the parent that needs to be subtracted from the parent div width
-	 *		override_width - boolean used to override window size check
 	 */
 	$.fn.overflowNavs = function(options) {
 		var more = options.more,
 			parent = options.parent,
 			offset = options.offset;
-		
-		// Variable used to override window size check
-		var override_width = false;
-		if(options.override_width) {
-			override_width = true;
-		}
-			
-		// Only perform this action if menu is not collapsed or override set to true
-		// Use width of 967 to allow for scroll bar on 980 windows... there must be a better way
-		if($(window).width() > 967 || override_width == true) {
-			// Get width of parent so we know how much room we have to work with
-			var parent_width = $(parent).width(),
-				ul_width = 80, // Alow width of "plus" dropdown
-				items = 0;
-				
-			// If there is something to offset the parent width against 
-			if(offset) {
-				parent_width = parent_width - $(offset).width();
-			}
-			
-			// Create the dropdown base
-			var dropdown = $("<li class=\"dropdown\"></li>"),
-				dropdown_link = $("<a class=\"dropdown-toggle\" data-toggle=\"dropdown\" href=\"#menu1\">" + more + "<b class=\"caret\"></b></a>"),
-				dropdown_ul = $("<ul class=\"dropdown-menu\"></ul>");
 
-			// Create menu items
-			$("li", this).not("li > ul").each(function() {
-				ul_width += $(this).outerWidth();
-				// Move item to dropdown list if width compromised
-				if(ul_width >= parent_width) {
-					if($(this).text()) {
-						dropdown_ul.append(this);
-						items ++;
-					}
-					else {
-						// Convert divider from vertical to horizontal
-						$(this).remove();
-						dropdown_ul.append("<li class=\"divider\"></li>");
-					}
+		// Get width of parent so we know how much room we have to work with
+		var parent_width = $(parent).width();
+
+		// If there is something to offset the parent width against
+		if (offset) {
+			parent_width = parent_width - $(offset).outerWidth();
+		}
+
+		// Create a handle to our ul menu
+		var ul = $(this);
+
+		// Find an already existing .overflow-nav dropdown
+		var dropdown = $('li.overflow-nav', ul);
+		// Create one if none exists
+		if (! dropdown.length) {
+			dropdown = $('<li class="overflow-nav dropdown"></li>');
+			dropdown.append($('<a class="dropdown-toggle" data-toggle="dropdown" href="#">' + more + '<b class="caret"></b></a>'));
+			dropdown.append($('<ul class="dropdown-menu"></ul>'));
+		}
+
+		// Window is shrinking
+		if (ul.outerWidth()+20 >= parent_width) {
+			// Loop through each non-dropdown li in the ul menu from right to left (using .get().reverse())
+			$($('li', ul).not('.dropdown').not('.dropdown li').get().reverse()).each(function() {
+				if (ul.outerWidth()+20 >= parent_width) {
+					// Remember the original width so that we can restore as the window grows
+					$(this).attr('data-original-width', $(this).outerWidth());
+					// Move the rightmost item to top of dropdown menu if we are running out of space
+					dropdown.children('ul.dropdown-menu').prepend(this);
 				}
 			});
-			
-			// Append HTML to document if elements exist
-			if(items) {
-				dropdown.append(dropdown_link);
-				dropdown.append(dropdown_ul);
-				this.append(dropdown);
+		}
+		// Window is growing
+		else {
+			var dropdownFirstItem = dropdown.children('ul.dropdown-menu').children().first();
+			if (ul.outerWidth()+parseInt(dropdownFirstItem.attr('data-original-width'))+20 < parent_width) {
+				// Restore the topmost dropdown item to the main menu
+				dropdown.before(dropdownFirstItem);
+			}
+		}
+
+		// Remove or add dropdown depending on whether or not it contains menu items
+		if (! dropdown.children('ul.dropdown-menu').children().length) {
+			dropdown.remove();
+		}
+		else {
+			// Append new dropdown menu to main menu iff it doesn't already exist
+			if (! ul.children('li.overflow-nav').length) {
+				ul.append(dropdown);
 			}
 		}
 	};
