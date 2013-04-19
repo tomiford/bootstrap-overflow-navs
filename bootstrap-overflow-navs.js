@@ -52,10 +52,10 @@
 		}
 
 		// Window is shrinking
-		if (ul.outerWidth()+20 >= parent_width) {
+		if (ul.outerWidth() >= parent_width) {
 			// Loop through each non-dropdown li in the ul menu from right to left (using .get().reverse())
 			$($('li', ul).not('.dropdown').not('.dropdown li').get().reverse()).each(function() {
-				if (ul.outerWidth()+20 >= parent_width) {
+				if (ul.outerWidth() >= parent_width) {
 					// Remember the original width so that we can restore as the window grows
 					$(this).attr('data-original-width', $(this).outerWidth());
 					// Move the rightmost item to top of dropdown menu if we are running out of space
@@ -68,9 +68,9 @@
 			// We used to just look at the first one, but this doesn't work when the window is maximized
 			//var dropdownFirstItem = dropdown.children('ul.dropdown-menu').children().first();
 			dropdown.children('ul.dropdown-menu').children().each(function() {
-				if (ul.outerWidth()+parseInt(dropdownFirstItem.attr('data-original-width'))+20 < parent_width) {
+				if (ul.outerWidth()+parseInt($(this).attr('data-original-width')) < parent_width) {
 					// Restore the topmost dropdown item to the main menu
-					dropdown.before(dropdownFirstItem);
+					dropdown.before($(this));
 				}
 				else {
 					// If the topmost item can't be restored, don't look any further
