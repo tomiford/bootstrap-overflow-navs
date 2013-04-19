@@ -23,31 +23,23 @@
 	/**
 	 * options:
 	 *		more - translated "more" text
-	 *		parent - parent/container div to calculate width from
-	 *		offset - any div inside the parent that needs to be subtracted from the parent div width
+	 *		offset - width that needs to be subtracted from the parent div width
 	 */
 	$.fn.overflowNavs = function(options) {
-		var more = options.more,
-			parent = options.parent,
-			offset = options.offset;
-
-		// Get width of parent so we know how much room we have to work with
-		var parent_width = $(parent).width();
-
-		// If there is something to offset the parent width against
-		if (offset) {
-			parent_width = parent_width - $(offset).outerWidth();
-		}
-
 		// Create a handle to our ul menu
+		// @todo Implement some kind of check to make sure there is only one?  If we accidentally get more than one
+		// then strange things happen
 		var ul = $(this);
+
+		// Get width of the navbar parent so we know how much room we have to work with
+		var parent_width = ul.parents('.navbar').width() - (options.offset ? parseInt(options.offset) : 0);
 
 		// Find an already existing .overflow-nav dropdown
 		var dropdown = $('li.overflow-nav', ul);
 		// Create one if none exists
 		if (! dropdown.length) {
 			dropdown = $('<li class="overflow-nav dropdown"></li>');
-			dropdown.append($('<a class="dropdown-toggle" data-toggle="dropdown" href="#">' + more + '<b class="caret"></b></a>'));
+			dropdown.append($('<a class="dropdown-toggle" data-toggle="dropdown" href="#">' + options.more + '<b class="caret"></b></a>'));
 			dropdown.append($('<ul class="dropdown-menu"></ul>'));
 		}
 
@@ -70,7 +62,7 @@
 			dropdown.children('ul.dropdown-menu').children().each(function() {
 				if (ul.outerWidth()+parseInt($(this).attr('data-original-width')) < parent_width) {
 					// Restore the topmost dropdown item to the main menu
-					dropdown.before($(this));
+					dropdown.before(this);
 				}
 				else {
 					// If the topmost item can't be restored, don't look any further
