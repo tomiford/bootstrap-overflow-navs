@@ -65,11 +65,18 @@
 		}
 		// Window is growing
 		else {
-			var dropdownFirstItem = dropdown.children('ul.dropdown-menu').children().first();
-			if (ul.outerWidth()+parseInt(dropdownFirstItem.attr('data-original-width'))+20 < parent_width) {
-				// Restore the topmost dropdown item to the main menu
-				dropdown.before(dropdownFirstItem);
-			}
+			// We used to just look at the first one, but this doesn't work when the window is maximized
+			//var dropdownFirstItem = dropdown.children('ul.dropdown-menu').children().first();
+			dropdown.children('ul.dropdown-menu').children().each(function() {
+				if (ul.outerWidth()+parseInt(dropdownFirstItem.attr('data-original-width'))+20 < parent_width) {
+					// Restore the topmost dropdown item to the main menu
+					dropdown.before(dropdownFirstItem);
+				}
+				else {
+					// If the topmost item can't be restored, don't look any further
+					return false;
+				}
+			});
 		}
 
 		// Remove or add dropdown depending on whether or not it contains menu items
