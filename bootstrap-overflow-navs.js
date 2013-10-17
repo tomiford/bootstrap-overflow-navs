@@ -1,7 +1,7 @@
 /* ===================================================
  * bootstrap-overflow-navs.js v0.2
  * ===================================================
- * Copyright 2012 Michael Langford
+ * Copyright 2012-13 Michael Langford, Evan Owens
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,9 @@
 		// @todo Implement some kind of check to make sure there is only one?  If we accidentally get more than one
 		// then strange things happen
 		var ul = $(this);
+		
+        	// Check if bootstrap navbar is collapsed (mobile)
+        	var not_collapsed = ul.parents('.collapse').is(":visible");
 
 		// Get width of the navbar parent so we know how much room we have to work with
 		var parent_width = ul.parents('.navbar').width() - (options.offset ? parseInt(options.offset) : 0);
@@ -45,22 +48,23 @@
 
 		// Window is shrinking
 		if (ul.outerWidth() >= parent_width) {
-			// Loop through each non-dropdown li in the ul menu from right to left (using .get().reverse())
-			$($('li', ul).not('.dropdown').not('.dropdown li').get().reverse()).each(function() {
-				if (ul.outerWidth() >= parent_width) {
-					// Remember the original width so that we can restore as the window grows
-					$(this).attr('data-original-width', $(this).outerWidth());
-					// Move the rightmost item to top of dropdown menu if we are running out of space
-					dropdown.children('ul.dropdown-menu').prepend(this);
-				}
-			});
+        		// Loop through each non-dropdown li in the ul menu from right to left (using .get().reverse())
+    			$($('li', ul).not('.dropdown').not('.dropdown li').get().reverse()).each(function() {
+	                	if (not_collapsed && ul.outerWidth() >= parent_width) {
+		                    // Remember the original width so that we can restore as the window grows
+		                    $(this).attr('data-original-width', $(this).outerWidth());
+		                    // Move the rightmost item to top of dropdown menu if we are running out of space
+		                    dropdown.children('ul.dropdown-menu').prepend(this);
+	                	}
+	                	// @todo on shrinking resize some menu items are still in drop down when bootstrap mobile navigation is displaying
+            		});
 		}
 		// Window is growing
 		else {
 			// We used to just look at the first one, but this doesn't work when the window is maximized
 			//var dropdownFirstItem = dropdown.children('ul.dropdown-menu').children().first();
 			dropdown.children('ul.dropdown-menu').children().each(function() {
-				if (ul.outerWidth()+parseInt($(this).attr('data-original-width')) < parent_width) {
+				if (not_collapsed && ul.outerWidth()+parseInt($(this).attr('data-original-width')) < parent_width) {
 					// Restore the topmost dropdown item to the main menu
 					dropdown.before(this);
 				}
