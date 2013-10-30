@@ -16,9 +16,7 @@
  * limitations under the License.
  * ========================================================== */
 
-!function ($) {
-
-	"use strict"; // jshint ;_;
++function ($) { "use strict";
 
 	/**
 	 * options:
@@ -30,14 +28,15 @@
 		// @todo Implement some kind of check to make sure there is only one?  If we accidentally get more than one
 		// then strange things happen
 		var ul = $(this);
+        var collapse = ul.parents('.navbar-collapse').hasClass('collapse');
 		
-	        // Check if bootstrap navbar is collapsed (mobile)
-	        if($(ul.parents).hasClass('collapse')) {
-	            var not_collapsed = ul.parents('.collapse').is(":visible");
-	        }
-	        else {
-	            var not_collapsed = true;
-	        }
+        // Check if bootstrap navbar is collapsed (mobile)
+        if(collapse) {
+            var not_collapsed = ul.parents('.collapse').is(":visible");
+        }
+        else {
+            var not_collapsed = true;
+        }
 
 		// Get width of the navbar parent so we know how much room we have to work with
 		var parent_width = ul.parents('.navbar').width() - (options.offset ? parseInt(options.offset) : 0);
