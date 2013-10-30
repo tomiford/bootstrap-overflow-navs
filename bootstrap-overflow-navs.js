@@ -1,5 +1,5 @@
 /* ===================================================
- * bootstrap-overflow-navs.js v0.2
+ * bootstrap-overflow-navs.js v0.3
  * ===================================================
  * Copyright 2012-13 Michael Langford, Evan Owens
  *
@@ -31,8 +31,13 @@
 		// then strange things happen
 		var ul = $(this);
 		
-        	// Check if bootstrap navbar is collapsed (mobile)
-        	var not_collapsed = ul.parents('.collapse').is(":visible");
+	        // Check if bootstrap navbar is collapsed (mobile)
+	        if($(ul.parents).hasClass('collapse')) {
+	            var not_collapsed = ul.parents('.collapse').is(":visible");
+	        }
+	        else {
+	            var not_collapsed = true;
+	        }
 
 		// Get width of the navbar parent so we know how much room we have to work with
 		var parent_width = ul.parents('.navbar').width() - (options.offset ? parseInt(options.offset) : 0);
