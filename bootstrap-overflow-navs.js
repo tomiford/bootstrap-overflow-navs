@@ -28,6 +28,11 @@
 		// @todo Implement some kind of check to make sure there is only one?  If we accidentally get more than one
 		// then strange things happen
 		var ul = $(this);
+        
+        // This should work with all navs, not just the navbar, so you should be able to pass a parent in
+        var parent = options.parent ? options.parent : ul.parents('.navbar');
+        
+        // Check if it is a nvabar and twitter bootstrap collapse is in use
         var collapse = ul.parents('.navbar-collapse').hasClass('collapse');
 		
         // Check if bootstrap navbar is collapsed (mobile)
@@ -39,7 +44,7 @@
         }
 
 		// Get width of the navbar parent so we know how much room we have to work with
-		var parent_width = ul.parents('.navbar').width() - (options.offset ? parseInt(options.offset) : 0);
+		var parent_width = $(parent).width() - (options.offset ? parseInt(options.offset) : 0);
 
 		// Find an already existing .overflow-nav dropdown
 		var dropdown = $('li.overflow-nav', ul);
