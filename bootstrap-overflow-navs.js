@@ -97,8 +97,6 @@
 				}
 			});
 		}
-        
-        console.log(dropdown);
 
 		// Remove or add dropdown depending on whether or not it contains menu items
 		if (! dropdown.children('ul.dropdown-menu').children().length) {
