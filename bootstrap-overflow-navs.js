@@ -1,7 +1,7 @@
 /* ===================================================
- * bootstrap-overflow-navs.js v0.3
+ * bootstrap-overflow-navs.js v0.4
  * ===================================================
- * Copyright 2012-13 Michael Langford, Evan Owens
+ * Copyright 2012-15 Michael Langford, Evan Owens
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,18 +48,32 @@
 
 		// Find an already existing .overflow-nav dropdown
 		var dropdown = $('li.overflow-nav', ul);
+        
 		// Create one if none exists
 		if (! dropdown.length) {
 			dropdown = $('<li class="overflow-nav dropdown"></li>');
 			dropdown.append($('<a class="dropdown-toggle" data-toggle="dropdown" href="#">' + options.more + '<b class="caret"></b></a>'));
 			dropdown.append($('<ul class="dropdown-menu"></ul>'));
 		}
+        
+        // Get the width of the navbar, need to add together <li>s as the ul wraps in bootstrap
+        var width = 0;
+        ul.children('li').each(function() {
+            var $this = $(this);
+            width += $this.outerWidth();
+        });
 
 		// Window is shrinking
-		if (ul.outerWidth() >= parent_width) {
+		if (width >= parent_width) {
         		// Loop through each non-dropdown li in the ul menu from right to left (using .get().reverse())
     			$($('li', ul).not('.dropdown').not('.dropdown li').get().reverse()).each(function() {
-	                	if (not_collapsed && ul.outerWidth() >= parent_width) {
+                        // Get the width of the navbar
+                        var width = 0;
+                        ul.children('li').each(function() {
+                            var $this = $(this);
+                            width += $this.outerWidth();
+                        });
+	                	if (not_collapsed && width >= parent_width) {
 		                    // Remember the original width so that we can restore as the window grows
 		                    $(this).attr('data-original-width', $(this).outerWidth());
 		                    // Move the rightmost item to top of dropdown menu if we are running out of space
@@ -73,7 +87,7 @@
 			// We used to just look at the first one, but this doesn't work when the window is maximized
 			//var dropdownFirstItem = dropdown.children('ul.dropdown-menu').children().first();
 			dropdown.children('ul.dropdown-menu').children().each(function() {
-				if (not_collapsed && ul.outerWidth()+parseInt($(this).attr('data-original-width')) < parent_width) {
+				if (not_collapsed && width+parseInt($(this).attr('data-original-width')) < parent_width) {
 					// Restore the topmost dropdown item to the main menu
 					dropdown.before(this);
 				}
@@ -83,6 +97,8 @@
 				}
 			});
 		}
+        
+        console.log(dropdown);
 
 		// Remove or add dropdown depending on whether or not it contains menu items
 		if (! dropdown.children('ul.dropdown-menu').children().length) {
