@@ -44,7 +44,7 @@
         }
 
 		// Get width of the navbar parent so we know how much room we have to work with
-		var parent_width = $(parent).width() - (options.offset ? parseInt(options.offset) : 0);
+		var parent_width = $(parent).width() - (options.offset ? parseInt($(options.offset).width()) : 0);
 
 		// Find an already existing .overflow-nav dropdown
 		var dropdown = $('li.overflow-nav', ul);
