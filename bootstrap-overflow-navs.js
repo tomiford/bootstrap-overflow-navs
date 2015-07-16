@@ -57,7 +57,7 @@
 		}
         
         // Get the width of the navbar, need to add together <li>s as the ul wraps in bootstrap
-        var width = 0;
+        var width = 100; // Allow for padding
         ul.children('li').each(function() {
             var $this = $(this);
             width += $this.outerWidth();
@@ -68,7 +68,7 @@
         		// Loop through each non-dropdown li in the ul menu from right to left (using .get().reverse())
     			$($('li', ul).not('.dropdown').not('.dropdown li').get().reverse()).each(function() {
                         // Get the width of the navbar
-                        var width = 0;
+                        var width = 100; // Allow for padding
                         ul.children('li').each(function() {
                             var $this = $(this);
                             width += $this.outerWidth();
